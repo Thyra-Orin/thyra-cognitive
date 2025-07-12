@@ -322,6 +322,7 @@ class VectorSearchEngine:
                     strength=payload.get("strength", 1.0),
                     access_count=payload.get("access_count", 0),
                     tags=payload.get("tags"),
+                    importance_score=payload.get("importance_score", 0.0),
                 )
 
                 results.append(

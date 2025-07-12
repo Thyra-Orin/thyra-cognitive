@@ -124,12 +124,13 @@ class CognitiveMemorySystem(CognitiveSystem):
             memory = CognitiveMemory(
                 id=memory_id,
                 content=text.strip(),
-                memory_type="episodic" if hierarchy_level == 2 else "semantic",
+                memory_type=context.get("memory_type", "episodic" if hierarchy_level == 2 else "semantic") if context else "episodic",
                 hierarchy_level=hierarchy_level,
                 dimensions=context.get("dimensions", {}) if context else {},
                 timestamp=current_time,
-                strength=1.0,
-                access_count=0,
+                strength=context.get("importance_score", 1.0) if context else 1.0,
+                access_count=context.get("access_count", 0) if context else 0,
+                importance_score=context.get("importance_score", 0.5) if context else 0.5,
                 metadata=memory_metadata,
                 tags=context.get("tags") if context else None,
             )
@@ -151,8 +152,9 @@ class CognitiveMemorySystem(CognitiveSystem):
                 "memory_type": memory.memory_type,
                 "hierarchy_level": hierarchy_level,
                 "timestamp": current_time.timestamp(),
-                "strength": 1.0,
-                "access_count": 0,
+                "strength": memory.strength,
+                "access_count": memory.access_count,
+                "importance_score": memory.importance_score,
             }
 
             # Add context metadata if provided
